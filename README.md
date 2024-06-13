@@ -17,3 +17,8 @@ $ python .\engineBTCLive.py 5m True 2000
 $ python .\runIndicatorsLive.py 5m 20 4 0.5
 
 $ python .\predictNeural5m_up02pct_scaled.py	
+
+
+> Validaciones workflow:
+
+$ python .\predictHistoryValidate.py 5m True
