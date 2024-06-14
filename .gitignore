@@ -11,6 +11,8 @@ __pycache__/
 
 # modelos
 *.joblib
+*.pkl
+*.keras
 
 # keys certificates
 *.pem
