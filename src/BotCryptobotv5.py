@@ -334,7 +334,7 @@ def main():
     if len(sys.argv) < 3:
         print("ERROR: [ Parametros necesarios: <interval> <live?> [limit] ]: Por ejemplo: " + sys.argv[0] + " 5m " + "True " + "500 (limit solo se usa para limitar datos live) ")
         sys.exit(1)  # Termina el programa con un error
-    secs = 300 # importante ! poner 300 si quiero cuadrar la hora con los intervalos. Poner 6o si quiero que ejecute cada min   
+    secs = 60 # importante ! poner 300 si quiero cuadrar la hora con los intervalos. Poner 6o si quiero que ejecute cada min   
     interval = '5m'
     windowrs = 20
     lookahead = 4
