@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Sentimientos - CryptoBot{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+<div class="content-container">
+    <div id="analysis-container" class="analysis-container">
+        <div class="result-container">
+            <div class="result-row">
+                <span class="label">Media de la polaridad:</span>
+                <div id="analysis-result" class="result"></div>
+            </div>
+            <div class="result-row">
+                <span class="label">Sentimiento del mercado:</span>
+                <span id="sentiment-text" class="sentiment-text"></span>
+            </div>
+        </div>
+        <div id="image-container" class="image-container">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="main-table" class="display">
+            <thead>
+                <tr id="table-headers">
+                    {% for header in headers %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        {% for header in headers %}
+                            <td>{{ row[header] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- carga jquery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- carga dataTables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+<script>
+    function refreshData2() {
+        $.ajax({
+            url: '/sentimentscsv',
+            method: 'GET',
+            success: function(response) {
+                var columns = response.headers;
+                var data = response.data;
+                var tableHeaders = $('#table-headers');
+                tableHeaders.empty();
+                columns.forEach(function(column) {
+                    tableHeaders.append('<th>' + column + '</th>');
+                });
+                var tableBody = $('#main-table tbody');
+                tableBody.empty();
+                data.forEach(function(record) {
+                    var row = '<tr>';
+                    columns.forEach(function(column) {
+                        var cellValue = record[column];
+                        row += '<td>' + cellValue + '</td>';
+                    });
+                    row += '</tr>';
+                    tableBody.append(row);
+                });
+
+                var table = $('#main-table').DataTable({
+                    destroy: true, 
+                    paging: true,
+                    pageLength: 20,
+                    lengthChange: false,
+                    searching: false,
+                    order: [[0, 'desc']]
+                });
+
+            }
+        });
+    }
+
+    function runSentimentAnalysis() {
+        $.ajax({
+            url: '/run-sentiment-analysis',
+            method: 'GET',
+            success: function(response) {
+                var resultElement = $('#analysis-result');
+                var sentimentTextElement = $('#sentiment-text');
+                var polarity = parseFloat(response.result);
+
+                if (polarity > 0) {
+                    resultElement.css('color', 'green');
+                    sentimentTextElement.text('Positivo');
+                    sentimentTextElement.css('color', 'green');
+                } else if (polarity < 0) {
+                    resultElement.css('color', 'red');
+                    sentimentTextElement.text('Negativo');
+                    sentimentTextElement.css('color', 'red');
+                } else {
+                    resultElement.css('color', 'black');
+                    sentimentTextElement.text('Neutro');
+                    sentimentTextElement.css('color', 'black');
+                }
+
+                resultElement.text(polarity.toFixed(2));
+
+                if (response.image_generated) {
+                    $('#image-container').html('<img src="{{ url_for("static", filename="sentimentsplot.png") }}" alt="Sentiments Analysis Plot" style="width: 600px; height: auto;">');
+                }
+            },
+            error: function() {
+                console.log('Error:', error);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        refreshData2();
+        runSentimentAnalysis();
+    });
+</script>
+{% endblock %}

@@ -172,7 +172,7 @@ def buy_at_market(client, symbol, quantity, minsorder, lastClose):
                         print(ordersell)
                         #meterlo funcion
                         current_time = datetime.datetime.now()
-                        balance = buy_price - sell_price
+                        balance = sell_price - buy_price
                         data = {
                         'time': current_time,
                         'buy_price': buy_price,
@@ -196,7 +196,7 @@ def buy_at_market(client, symbol, quantity, minsorder, lastClose):
                 client.cancel_order(symbol=symbol, orderId=orderlosssell['orderId']) # cancelo el stop loss sell
                 #meterlo funcion
                 # current_time = datetime.datetime.now()
-                # balance = buy_price - sell_price
+                # balance = sell_price - buy_price
                 # data = {
                 # 'time': current_time,
                 # 'buy_price': buy_price,
@@ -213,7 +213,7 @@ def buy_at_market(client, symbol, quantity, minsorder, lastClose):
                 client.cancel_order(symbol=symbol, orderId=orderprofitsell['orderId']) # cancelo el profitsell
                                 #meterlo funcion
                 # current_time = datetime.datetime.now()
-                # balance = buy_price - sell_price
+                # balance = sell_price - buy_price 
                 # data = {
                 # 'time': current_time,
                 # 'buy_price': buy_price,
@@ -235,7 +235,7 @@ def buy_at_market(client, symbol, quantity, minsorder, lastClose):
         print(f"Error: {e}")
 
     current_time = datetime.datetime.now()
-    balance = buy_price - sell_price
+    balance = sell_price - buy_price
     data = {
     'time': current_time,
     'buy_price': buy_price,
@@ -343,7 +343,7 @@ def main():
     btcamount = 0.001
     pctup = 0.4 # mi objetivo por ahora
     minsorder = 25 # cuantos minutos de orden normalmente 20
-    predictbuypct = 0.78 #  0.7 for test, then 0.75 or 0.78
+    predictbuypct = 0.7 #  0.7 for test, then 0.75 or 0.78
     # wallet
     load_dotenv()  # This loads the environment variables from a .env file
 

@@ -1,0 +1,260 @@
+body {
+    background-color: white;
+    color: black;
+}
+
+#main-table {
+    background-color: white;
+    color: #555555;
+    font-size: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#main-table th, #main-table td {
+    background-color: white;
+    border-top: 1px solid #d3d3d3;
+    border-bottom: 1px solid #d3d3d3;
+    border-left: none;
+    border-right: none;
+    padding: 8px;
+    text-align: left;
+}
+
+#main-table th {
+    background-color: white;
+    color: black;
+}
+
+#main-table tbody tr:hover td {
+    background-color: #f2d590 !important;
+}
+
+.dataTables_filter {
+    float: left !important;
+    text-align: left !important;
+    padding: 10px;
+    border: none;
+}
+
+.dataTables_filter input {
+    width: 150px;
+    font-size: 10px;
+    border: none;
+}
+
+.dataTables_filter label {
+    font-size: 10px;
+    margin-right: 10px;
+}
+
+.dataTables_paginate .paginate_button {
+    font-size: 10px;
+    padding: 2px 6px;
+}
+
+.dataTables_info {
+    font-size: 12px;
+}
+
+.text-green {
+    color: green;
+    font-weight: bold;
+}
+
+.text-red {
+    color: red;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-black {
+    color: black;
+}
+
+.highlight-orange {
+    color: #FFA07A;
+}
+
+.btn {
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    width: 200px;
+    border: none;
+    cursor: pointer;
+    background-color: lightgray;
+    color: black;
+}
+
+.btn-green {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.btn-green:hover {
+    background-color: darkgreen;
+}
+
+.btn-red {
+    background-color: red;
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: darkred;
+}
+
+.terminal-output { /*futura consola simulaterminal linux*/
+    background-color: black;
+    color: green;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.bg-dark-gray {
+    background-color: #343a40 !important;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+}
+
+.table-small {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.table-small th, .table-small td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table-small th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.table-small td.value {
+    color: grey;
+}
+
+.small-header {
+    font-size: 16px;
+}
+
+.text-green {
+    color: green;
+}
+
+.text-red {
+    color: red;
+}
+
+.text-grey {
+    color: grey;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.analysis-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.result-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.result-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.label {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.result {
+    font-size: 16px;
+}
+
+.sentiment-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.image-container {
+    margin-left: 20px;
+}
+
+.table-container {
+    flex: 1;
+    padding-left: 20px;
+    margin-top: -20px;
+}
+
+.border-table, .summary-table {
+    border: 1px solid lightgrey;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    color: #555555;
+}
+
+.border-table th, .border-table td, .summary-table th, .summary-table td {
+    border: none;
+    padding: 8px;
+    text-align: left;
+    background-color: white;
+}
+
+.border-table th, .summary-table th {
+    background-color: white;
+    color: black;
+    font-weight: normal;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+
+.green-text {
+    color: green;
+}
+
+.table-wallet {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.logouem-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}

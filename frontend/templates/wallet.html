@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Trade{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+
+<div class="table-wallet">
+    <table id="summary-table" class="summary-table border-table">
+        <thead>
+            <tr>
+                <th colspan="2" style="font-size: 18px; text-align: center;">Balance estimado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2" id="total-balance" style="text-align: center;"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="main-table" class="display border-table">
+        <thead>
+            <tr id="table-headers">
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<!-- carga jquery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- carga dataTables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+<script>
+    const btcIconUrl = "{{ url_for('static', filename='btc_icon.png') }}";
+    const usdtIconUrl = "{{ url_for('static', filename='usdt_icon.png') }}";
+
+    function refreshData2() {
+        $.ajax({
+            url: '/walletcsv',
+            method: 'GET',
+            success: function(response) {
+                var columns = response.columns;
+                var data = response.data;
+                var totalBalanceUsd = response.total_balance_usd;
+                $('#total-balance').html('<span class="bold-text green-text" style="font-size: 24px;">$' + parseFloat(totalBalanceUsd).toFixed(2) + '</span>');
+                var tableHeaders = $('#table-headers');
+                tableHeaders.empty();
+                columns.forEach(function(column) {
+                    tableHeaders.append('<th>' + column + '</th>');
+                });
+                var tableBody = $('#main-table tbody');
+                tableBody.empty();
+                data.forEach(function(record) {
+                    var row = '<tr>';
+                    columns.forEach(function(column) {
+                        var cellClass = 'text-black';
+                        var cellValue = record[column];
+
+                        if (column === 'Crypto') {
+                            if (cellValue === 'BTC') {
+                                cellValue = '<img src="' + btcIconUrl + '" alt="BTC Icon" style="width:16px; height:16px; margin-right:8px;"><span class="bold-text">' + cellValue + '</span>';
+                            } else if (cellValue === 'USDT') {
+                                cellValue = '<img src="' + usdtIconUrl + '" alt="USDT Icon" style="width:16px; height:16px; margin-right:8px;"><span class="bold-text">' + cellValue + '</span>';
+                            }
+                        }
+
+                        if (column === 'Balance') {
+                            const balanceValue = '<span class="bold-text">' + cellValue + '</span>';
+                            const secondaryBalance = record['SecondaryBalance'] ? ' <br><small>' + record['SecondaryBalance'] + '</small>' : '';
+                            cellValue = balanceValue + secondaryBalance;
+                        }
+                        
+                        row += '<td class="' + cellClass + '">' + cellValue + '</td>';
+                    });
+                    row += '</tr>';
+                    tableBody.append(row);
+                });
+
+                var table = $('#main-table').DataTable({
+                    destroy: true,
+                    paging: false,
+                    pageLength: 20,
+                    lengthChange: false,
+                    searching: false,
+                    info: false,
+                    ordering: false,
+                });
+
+                
+            }
+        });
+    }
+
+    refreshData2();
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - CryptoBot{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+<div style="display: flex; width: 100%;">
+    <div style="flex: 1;">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container" style="height:100%;width:100%">
+            <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+            <div class="tradingview-widget-copyright">
+                <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                    <span class="blue-text">Siga los mercados en TradingView</span>
+                </a>
+            </div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {
+                "autosize": false,
+                "width": 900,
+                "height": 500,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "5",
+                "timezone": "Europe/London",
+                "theme": "light",
+                "style": "1",
+                "locale": "es",
+                "hide_top_toolbar": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": false,
+                "calendar": false,
+                "support_host": "https://www.tradingview.com"
+            }
+            </script>
+        </div>
+        <!-- TradingView Widget END -->
+        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+            <button class="btn btn-green" onclick="runBot()">Ejecutar bot</button>
+            <button class="btn btn-red">Detener bot</button>
+        </div>
+    </div>
+
+    <div style="flex: 1; padding-left: 20px; margin-top: -20px;">
+        <table id="main-table" class="display">
+            <thead>
+                <tr id="table-headers">
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="https://alternative.me/crypto/fear-and-greed-index.png" alt="Latest Crypto Fear & Greed Index" style="width: 80%; border: 1px solid lightgrey;" />
+        </div>
+    </div>
+</div>
+
+<!-- carga jquery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- carga dataTables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+
+<script>
+    function refreshData() {
+        $.ajax({
+            url: '/datacsv',
+            method: 'GET',
+            success: function(response) {
+                var columns = response.columns;
+                var data = response.data;
+                var tableHeaders = $('#table-headers');
+                tableHeaders.empty();
+                columns.forEach(function(column) {
+                    tableHeaders.append('<th>' + column + '</th>');
+                });
+                var tableBody = $('#main-table tbody');
+                tableBody.empty();
+                data.forEach(function(record) {
+                    var row = '<tr>';
+                    columns.forEach(function(column, index) {
+                        var cellClass = 'text-black';
+                        if (index >= 2) {
+                            if (column.toLowerCase().includes('close') || column.toLowerCase().includes('precio')) {
+                                cellClass = 'text-black';
+                            } else if (parseFloat(record[column]) >= 0.51) {
+                                cellClass = 'text-green';
+                            } else {
+                                cellClass = 'text-red';
+                            }
+                        }
+                        row += '<td class="' + cellClass + '">' + record[column] + '</td>';
+                    });
+                    row += '</tr>';
+                    tableBody.append(row);
+                });
+                var table = $('#main-table').DataTable({
+                    destroy: true,
+                    paging: true,
+                    pageLength: 6,
+                    lengthChange: false,
+                    searching: false,
+                    order: [[0, 'desc']],
+                    columnDefs: [
+                        { type: 'date', targets: 0 }
+                    ]
+                });
+
+            }
+        });
+    }
+
+    function runBot() {
+        $.ajax({
+            url: '/runbot',
+            method: 'POST',
+            data: {
+                interval: '5m',
+                flag: 'True',
+                value: '289'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Bot ejecutado con exito:\n' + response.output);
+                } else {
+                    alert('Error al ejecutar el bot:\n' + response.output);
+                }
+            }
+        });
+    }
+
+    refreshData();
+
+    setInterval(refreshData, 60000);
+</script>
+{% endblock %}

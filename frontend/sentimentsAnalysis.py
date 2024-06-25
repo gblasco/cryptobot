@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 
 def reddit():
-    load_dotenv()  # Carga .env
+    load_dotenv()  # This loads the environment variables from a .env file
 
     reddit = praw.Reddit(client_id=os.getenv('REDDIT_API_KEY'),
                         client_secret=os.getenv('REDDIT_API_SECRET'),
@@ -69,16 +69,19 @@ def reddit():
         data['Polarity'].append(polarity)
 
     df = pd.DataFrame(data)
-    df.to_csv('sentiments_bitcoin.csv', index=False)
+    df.to_csv('../data/csv/sentiments_bitcoin.csv', index=False)
     polarity_avg = df['Polarity'].mean()
-    print(f'[LOG]: Media de los sentimientos!!: {polarity_avg:.4f}')
+    print(f'{polarity_avg:.4f}')
 
+    plt.figure(figsize=(4, 2))
     plt.hist(df['Polarity'], bins=20, edgecolor='black')
-    plt.title('Analisis de sentimientos del canal r/bitcoin')
-    plt.xlabel('Polaridad')
-    plt.ylabel('Frecuencia')
+    plt.title('Analisis de sentimientos del canal r/bitcoin', fontsize=8)
+    plt.xlabel('Polaridad', fontsize=6)
+    plt.ylabel('Frecuencia', fontsize=6)
+    plt.xticks(fontsize=6)
+    plt.yticks(fontsize=6)
     #plt.show()
-    plt.savefig('sentimentsplot.png')
+    plt.savefig('static/sentimentsplot.png')
     return polarity_avg
 
 def main():

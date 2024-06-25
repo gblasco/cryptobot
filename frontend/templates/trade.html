@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Trade{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+<div style="display: flex; justify-content: space-between; padding: 20px;">
+    <div style="width: 22%;">
+        <h2 class="small-header">Total</h2>
+        <table id="total-table" class="table-small">
+            <tbody id="total-table-body">
+            </tbody>
+        </table>
+    </div>
+    <div style="width: 22%;">
+        <h2 class="small-header">Mes</h2>
+        <table id="month-table" class="table-small">
+            <tbody id="month-table-body">
+            </tbody>
+        </table>
+    </div>
+    <div style="width: 22%;">
+        <h2 class="small-header">Semana</h2>
+        <table id="week-table" class="table-small">
+            <tbody id="week-table-body">
+            </tbody>
+        </table>
+    </div>
+    <div style="width: 22%;">
+        <h2 class="small-header">Dia</h2>
+        <table id="day-table" class="table-small">
+            <tbody id="day-table-body">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="width: 100%; padding: 20px;">
+    <table id="main-table" class="table-small">
+        <thead>
+            <tr id="table-header">
+                <th>Date</th>
+                <th>Par</th>
+                <th>Tipo</th>
+                <th>Amount</th>
+                <th>Buy Price</th>
+                <th>Sell Price</th>
+                <th>Earn</th>
+                <th>Total in USDT</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+    </table>
+</div>
+
+<!-- carga jquery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- carga dataTables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        function applyColorClass(value, isPercentage = false) {
+            if (isPercentage) {
+                if (value >= 50) {
+                    return 'text-green';
+                } else if (value < 50 && value != 0) {
+                    return 'text-red';
+                }
+            } else {
+                if (value > 0) {
+                    return 'text-green';
+                } else if (value < 0) {
+                    return 'text-red';
+                }
+            }
+            return 'text-grey';
+        }
+
+        function fillTable(tableBodyId, data) {
+            const tableBody = $(tableBodyId);
+            const headers = Object.keys(data[0]);
+            headers.forEach(header => {
+                const value = data[0][header];
+                let colorClass = 'text-grey';
+                if (header === '% ganadoras') {
+                    colorClass = applyColorClass(value, true);
+                } else if (header === 'Suma' || header === 'usdt ganado') {
+                    colorClass = applyColorClass(value, false);
+                }
+                const rowElement = $('<tr></tr>');
+                rowElement.append(`<td>${header}</td>`);
+                rowElement.append(`<td class="value ${colorClass}">${value}</td>`);
+                tableBody.append(rowElement);
+            });
+        }
+
+        $.ajax({
+            url: '/tradecsvtotal',
+            method: 'GET',
+            success: function(response) {
+                fillTable('#total-table-body', response.data);
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+
+        $.ajax({
+            url: '/tradecsvmonth',
+            method: 'GET',
+            success: function(response) {
+                fillTable('#month-table-body', response.data);
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+
+        $.ajax({
+            url: '/tradecsvweek',
+            method: 'GET',
+            success: function(response) {
+                fillTable('#week-table-body', response.data);
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+
+        $.ajax({
+            url: '/tradecsvday',
+            method: 'GET',
+            success: function(response) {
+                fillTable('#day-table-body', response.data);
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+
+        $.ajax({
+            url: '/tradecsv',
+            method: 'GET',
+            success: function(response) {
+                const data = response.data;
+                const tableBody = $('#table-body');
+                data.forEach(row => {
+                    const rowElement = $('<tr></tr>');
+                    rowElement.append(`<td>${row['timestamp']}</td>`);
+                    rowElement.append(`<td>BTC/USDT</td>`);
+                    rowElement.append(`<td>sell</td>`);
+                    rowElement.append(`<td>0.001</td>`);
+                    rowElement.append(`<td>${row['price1']}</td>`);
+                    rowElement.append(`<td>${row['price2']}</td>`);
+                    const earn = row['difference'];
+                    const amount = 0.001;
+                    const totalInUsdt = earn * amount;
+                    const earnElement = $(`<td>${earn}</td>`);
+                    if (earn > 0) {
+                        earnElement.addClass('text-green');
+                    } else if (earn < 0) {
+                        earnElement.addClass('text-red');
+                    } else {
+                        earnElement.addClass('text-grey');
+                    }
+                    rowElement.append(earnElement);
+                    rowElement.append(`<td class="${earn > 0 ? 'text-green' : (earn < 0 ? 'text-red' : 'text-grey')}">${totalInUsdt.toFixed(2)}</td>`);
+
+                    tableBody.append(rowElement);
+                });
+
+                var table = $('#main-table').DataTable({
+                    pageLength: 20,
+                    lengthChange: false,
+                    order: [[0, "desc"]]
+                });
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+</script>
+
+{% endblock %}
