@@ -69,6 +69,7 @@ class GetDataBTC:
         df.drop('Ignore', axis=1, inplace=True)
         df.drop('Close Time', axis=1, inplace=True)
         df['Time'] = pd.to_datetime(df['Time'], unit='ms')
+        df['Time'] = df['Time'].dt.tz_localize('UTC').dt.tz_convert('Europe/London').dt.strftime('%Y-%m-%d %H:%M:%S')
         #df['Close Time'] = pd.to_datetime(df['Close Time'], unit='ms')
         for col in ['Open', 'High', 'Low', 'Close', 'Volume', 'Quote Asset Volume', 
                     'Taker Buy Base Asset Volume', 'Taker Buy Quote Asset Volume']:

@@ -185,6 +185,7 @@ class IndicatorsLive:
             data_list = data.get('data', [])
             df2 = pd.DataFrame(data_list)
             df2['date'] = pd.to_datetime(df2['timestamp'], unit='s')
+            df2['date'] = df2['date'].dt.tz_localize('UTC').dt.tz_convert('Europe/London')
             df2.drop(columns=['timestamp','time_until_update', 'value_classification'], inplace=True)
             df2['date'] = df2['date'].dt.date
             df['date'] = pd.to_datetime(df['Time'])

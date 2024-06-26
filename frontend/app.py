@@ -8,12 +8,12 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = os.urandom(42)
 
-user1_password = os.getenv('FRONT_USER1_KEY')
-user2_password = os.getenv('FRONT_USER2_KEY')
+gbbpassword = os.getenv('FRONT_USER1_KEY')
+adminpassword = os.getenv('FRONT_USER2_KEY')
 
 users = {
-    'user1': user1_password,
-    'user2': user2_password
+    'gbb': gbbpassword,
+    'admin': adminpassword
 }
 
 def mandatory_login(f):
